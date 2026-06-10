@@ -2,25 +2,23 @@ import asyncio
 import os
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
-from aiogram.utils.keyboard import InlineKeyboardBuilder  
+from aiogram.utils.keyboard import InlineKeyboardBuilder  # Інструмент для зручного створення кнопок
 
 # Твій токен з файлу
 bot = Bot(token=os.getenv("BOT_TOKEN"))
 dp = Dispatcher()
 
 
-
-
-ADMIN_ID = 7580774097 
-saved_news_variable = ""  
-waiting_for_text = False  
-
+ADMIN_ID = 7580774097  
+saved_news_variable = "" 
+waiting_for_text = False 
 
 
 
+# Обробник команди /start
 @dp.message(Command("start"))
 async def start_handler(message: types.Message):
-
+    
     builder = InlineKeyboardBuilder()
 
     builder.add(
@@ -36,7 +34,7 @@ async def start_handler(message: types.Message):
         )
     )
 
-
+   
     builder.add(
         types.InlineKeyboardButton(
             text="сайт", url="https://orange-nady-76.tiiny.site"
@@ -59,19 +57,22 @@ async def start_handler(message: types.Message):
     )  
     
 
-
+    
     builder.adjust(1)
 
+   
     await message.reply(
         "ось посилання на наші офіційні чати і додаткові матеріали.",
         reply_markup=builder.as_markup(),
     )
     await message.answer("А також...")
+    builder2 = InlineKeyboardBuilder(2)
     builder2.add(
         types.InlineKeyboardButton(
             text="новости", callback_data="saved_news_variable "
         )
     )
+
 
 @dp.message(lambda message: message.text == "Додати новость" and message.from_user.id == ADMIN_ID)
 async def ask_for_news(message: types.Message):
@@ -80,19 +81,20 @@ async def ask_for_news(message: types.Message):
     await message.answer("Ок, пиши")
 
 
+
 @dp.message(lambda message: waiting_for_text and message.from_user.id == ADMIN_ID)
 async def save_to_variable(message: types.Message):
     global saved_news_variable, waiting_for_text
     
-    saved_news_variable = message.text  
-    waiting_for_text = False 
+    saved_news_variable = message.text  # Твій текст записався в змінну!
+    waiting_for_text = False  # Вимикаємо режим очікування
     
- 
+    # Перевірка для тебе, що все збереглося
     await message.answer(f"Успішно збережено в змінну! Ось твій текст:\n{saved_news_variable}")
 
 
 
-    if message.from_user.id == ADMIN_ID: 
+    if message.from_user.id == ADMIN_ID:  # Замініть на ID свого бота
         await message.answer(
             "Якщо ви хочете отримувати новини від нашого посла, натисніть кнопку нижче.",
             reply_markup=builder2.as_markup(),
@@ -105,5 +107,6 @@ async def main():
     await dp.start_polling(bot)
 
 
+# Головна точка запуску
 if __name__ == "__main__":
     asyncio.run(main())
