@@ -4,7 +4,7 @@ from aiogram.filters import Command
 from aiogram.utils.keyboard import InlineKeyboardBuilder  # Інструмент для зручного створення кнопок
 
 # Твій токен з файлу
-bot = Bot(token="8885074317:AAGfmv0NIEQqZ7WgIc8zVQ7nO-cGd1DnZV4")
+bot = Bot(TOKEN = os.getenv("BOT_TOKEN")
 dp = Dispatcher()
 
 
