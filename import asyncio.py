@@ -1,18 +1,26 @@
-import os
 import asyncio
+import os
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
-from aiogram.utils.keyboard import InlineKeyboardBuilder 
+from aiogram.utils.keyboard import InlineKeyboardBuilder  # Інструмент для зручного створення кнопок
 
-
+# Твій токен з файлу
 bot = Bot(token=os.getenv("BOT_TOKEN"))
 dp = Dispatcher()
 
 
 
+# 1. Створюємо глобальні змінні на початку файлу
+ADMIN_ID = 7580774097  # СЮДИ ВПИШИ СВІЙ TELEGRAM ID
+saved_news_variable = ""  # Сюди бот запише твій текст
+waiting_for_text = False  # Прапорець: чи чекає бот текст прямо зараз
+
+
+
+# Обробник команди /start
 @dp.message(Command("start"))
 async def start_handler(message: types.Message):
-   
+    # Створюємо будівельник клавіатури прямо тут
     builder = InlineKeyboardBuilder()
 
     builder.add(
@@ -28,7 +36,7 @@ async def start_handler(message: types.Message):
         )
     )
 
-   
+    # ПРИБРАНО ПРОБІЛ: тепер посилання починається суворо з "https"
     builder.add(
         types.InlineKeyboardButton(
             text="сайт", url="https://orange-nady-76.tiiny.site"
@@ -48,18 +56,51 @@ async def start_handler(message: types.Message):
         types.InlineKeyboardButton(
             text="спонсори", url="https://t.me/geyboilink/8"
         )
-    )           
-
-
-
+    )  
     
+
+    # Робимо так, щоб кожна кнопка була красивою великою смужкою одна під одною
     builder.adjust(1)
 
-    
+    # Відправляємо повідомлення і прикріплюємо нашу створену кнопку
     await message.reply(
         "ось посилання на наші офіційні чати і додаткові матеріали.",
         reply_markup=builder.as_markup(),
     )
+    await message.answer("А також...")
+    builder2.add(
+        types.InlineKeyboardButton(
+            text="новости", callback_data="ambasardor_news"
+        )
+    )
+
+# 2. Обробник фрази "Додати новость" (спрацює тільки для тебе)
+@dp.message(lambda message: message.text == "Додати новость" and message.from_user.id == ADMIN_ID)
+async def ask_for_news(message: types.Message):
+    global waiting_for_text
+    waiting_for_text = True  # Вмикаємо режим очікування тексту
+    await message.answer("Ок, пиши")
+
+
+# 3. Обробник, який зловить твій наступний текст і запише в змінну
+@dp.message(lambda message: waiting_for_text and message.from_user.id == ADMIN_ID)
+async def save_to_variable(message: types.Message):
+    global saved_news_variable, waiting_for_text
+    
+    saved_news_variable = message.text  # Твій текст записався в змінну!
+    waiting_for_text = False  # Вимикаємо режим очікування
+    
+    # Перевірка для тебе, що все збереглося
+    await message.answer(f"Успішно збережено в змінну! Ось твій текст:\n{saved_news_variable}")
+
+
+
+    if message.from_user.id == :  # Замініть на ID свого бота
+        await message.answer(
+            "Якщо ви хочете отримувати новини від нашого посла, натисніть кнопку нижче.",
+            reply_markup=builder2.as_markup(),
+        )
+
 
 
 async def main():
@@ -67,6 +108,6 @@ async def main():
     await dp.start_polling(bot)
 
 
-
+# Головна точка запуску
 if __name__ == "__main__":
     asyncio.run(main())
