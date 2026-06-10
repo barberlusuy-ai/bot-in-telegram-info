@@ -92,7 +92,7 @@ async def save_to_variable(message: types.Message):
 
 
 
-    if message.from_user.id == : 
+    if message.from_user.id == ADMIN_ID: 
         await message.answer(
             "Якщо ви хочете отримувати новини від нашого посла, натисніть кнопку нижче.",
             reply_markup=builder2.as_markup(),
