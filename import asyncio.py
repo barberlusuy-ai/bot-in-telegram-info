@@ -1,17 +1,17 @@
 import asyncio
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
-from aiogram.utils.keyboard import InlineKeyboardBuilder  # Інструмент для зручного створення кнопок
+from aiogram.utils.keyboard import InlineKeyboardBuilder 
 
-# Твій токен з файлу
-bot = Bot(TOKEN = os.getenv("BOT_TOKEN")
+
+bot = Bot(token=os.getenv("BOT_TOKEN"))
 dp = Dispatcher()
 
 
-# Обробник команди /start
+
 @dp.message(Command("start"))
 async def start_handler(message: types.Message):
-    # Створюємо будівельник клавіатури прямо тут
+   
     builder = InlineKeyboardBuilder()
 
     builder.add(
@@ -27,7 +27,7 @@ async def start_handler(message: types.Message):
         )
     )
 
-    # ПРИБРАНО ПРОБІЛ: тепер посилання починається суворо з "https"
+   
     builder.add(
         types.InlineKeyboardButton(
             text="сайт", url="https://orange-nady-76.tiiny.site"
@@ -51,10 +51,10 @@ async def start_handler(message: types.Message):
 
 
 
-    # Робимо так, щоб кожна кнопка була красивою великою смужкою одна під одною
+    
     builder.adjust(1)
 
-    # Відправляємо повідомлення і прикріплюємо нашу створену кнопку
+    
     await message.reply(
         "ось посилання на наші офіційні чати і додаткові матеріали.",
         reply_markup=builder.as_markup(),
@@ -66,6 +66,6 @@ async def main():
     await dp.start_polling(bot)
 
 
-# Головна точка запуску
+
 if __name__ == "__main__":
     asyncio.run(main())
