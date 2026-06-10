@@ -70,7 +70,7 @@ async def start_handler(message: types.Message):
     await message.answer("А також...")
     builder2.add(
         types.InlineKeyboardButton(
-            text="новости", callback_data="ambasardor_news"
+            text="новости", callback_data="saved_news_variable "
         )
     )
 
