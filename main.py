@@ -19,7 +19,7 @@ async def start_handler(message: types.Message):
     builder = InlineKeyboardBuilder()
 
     # 1. Головна кнопка додатка (тепер правильно додається в builder)
-    web_app = types.WebAppInfo(url="https://untitled-1222-2cr3alyuc-barberlusuy-6752s-projects.vercel.app/") 
+    web_app = types.WebAppInfo(url="https://untitled-1222.vercel.app/") 
     builder.add(
         types.InlineKeyboardButton(text="🏆 Відкрити додаток", web_app=web_app)
     )
