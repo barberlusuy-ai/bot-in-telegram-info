@@ -4,6 +4,34 @@ from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
 from aiogram.types import CallbackQuery
 from aiogram.utils.keyboard import InlineKeyboardBuilder  
+from threading import Thread
+   
+   
+from flask import Flask
+
+
+app = Flask('')
+
+@app.route('/')
+def home():
+    return "Бот запущений і працює!"
+
+
+def run():
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host='0.0.0.0', port=port)
+
+def keep_alive():
+    t = Thread(target=run)
+    t.start()
+
+keep_alive()
+
+
+
+
+
+
 
 bot = Bot(token=os.getenv("BOT_TOKEN"))
 dp = Dispatcher()
