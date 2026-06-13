@@ -9,6 +9,8 @@ from flask import Flask
 
 app = Flask('')
 
+users_list = set()
+
 @app.route('/')
 def home():
     return "Бот запущений і працює!"
@@ -33,8 +35,8 @@ waiting_for_text = False
 @dp.message(Command("start"))
 async def start_handler(message: types.Message):
     builder = InlineKeyboardBuilder()
-
-    web_app = types.WebAppInfo(url="https://untitled-1-tan.vercel.app/")
+    users_list.add(message.from_user.id)
+    web_app = types.WebAppInfo(url="https://untitled-1222.vercel.app/")
     builder.add(
         types.InlineKeyboardButton(text="🏆 Відкрити додаток", web_app=web_app)
     )
@@ -75,6 +77,22 @@ async def save_to_variable(message: types.Message):
     saved_news_variable = message.text
     waiting_for_text = False
     await message.answer(f"Успішно збережено в змінну! Ось твій текст:\n{saved_news_variable}")
+
+    news_builder = InlineKeyboardBuilder()
+    news_builder.add(types.InlineKeyboardButton(text="новости", callback_data="show_news"))
+    
+    # Робимо розсилку один раз для кожного користувача
+    for user_id in users_list:
+        try:
+            await bot.send_message(
+                chat_id=user_id,
+                text="Ви отримали листа",
+                reply_markup=news_builder.as_markup()
+            )
+        except Exception:
+            continue
+            
+    await message.answer("Новину збережено та один раз надіслано всім користувачам.")
 
 @dp.callback_query(lambda c: c.data == "show_news")
 async def process_show_news(callback_query: CallbackQuery):
