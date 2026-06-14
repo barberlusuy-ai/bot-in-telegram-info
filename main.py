@@ -36,7 +36,7 @@ waiting_for_text = False
 async def start_handler(message: types.Message):
     builder = InlineKeyboardBuilder()
     users_list.add(message.from_user.id)
-    web_app = types.WebAppInfo(url="https://untitled-1222.vercel.app/")
+    web_app = types.WebAppInfo(url="https://untitled-1-tan.vercel.app/")
     builder.add(
         types.InlineKeyboardButton(text="🏆 Відкрити додаток", web_app=web_app)
     )
