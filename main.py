@@ -87,28 +87,27 @@ async def save_to_variable(message: types.Message):
     global saved_news_variable, waiting_for_text
     saved_news_variable = message.text
     waiting_for_text = False
-    await message.answer(f"Успішно збережено в змінну! Ось твій текст:\n{saved_news_variable}") and 
-    bot.send_message(chat_id = users_list, text=f":\n{saved_news_variable}")
+    await message.answer(f"Успішно збережено в змінну! Ось твій текст:\n{saved_news_variable}") 
 
     news_builder = InlineKeyboardBuilder()
     news_builder.add(types.InlineKeyboardButton(text="новости", callback_data="show_news"))
     
-    # Робимо розсилку один раз для кожного користувача
-    for user_id in users_list:
-        try:
-            await bot.send_message(
-                chat_id=user_id,
-                text="Ви отримали листа",
-                reply_markup=news_builder.as_markup()
-            )
-        except Exception:
-            continue
-            
-    await message.answer("Новину збережено та один раз надіслано всім користувачам.")
-
-@dp.command("sendall")
+@dp.message(Command("sendall"))
 async def send_all_news(message: types.Message):
-    await bot.send_message(chat_id = users_list, text=saved_news_variable)
+    gloal saved_news_variable
+    if saved_news_variable == "":
+        await message.answer("Новин поки немає, заходьте пізніше!")
+    else:message.answer(f"запуск розсилки")
+    success_count = 0
+
+for id in list (users_list): 
+    try:
+        await bot.send_message(chat_id=id, text = saved_news_variable)
+        success_count += 1
+    except Exception as e:
+        print(f"Помилка при відправці повідомлення користувачу {id}: {e}") 
+    await message.answer(f"Розсилка завершена! Успішно відправлено {success_count} повідомлень.")
+
 
 
 @dp.callback_query(lambda c: c.data == "show_news")
