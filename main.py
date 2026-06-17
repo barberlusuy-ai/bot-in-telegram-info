@@ -94,7 +94,7 @@ async def save_to_variable(message: types.Message):
     
 @dp.message(Command("sendall"))
 async def send_all_news(message: types.Message):
-    gloal saved_news_variable
+    global saved_news_variable
     if saved_news_variable == "":
         await message.answer("Новин поки немає, заходьте пізніше!")
     else:message.answer(f"запуск розсилки")
