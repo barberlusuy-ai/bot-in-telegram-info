@@ -97,16 +97,17 @@ async def send_all_news(message: types.Message):
     global saved_news_variable
     if saved_news_variable == "":
         await message.answer("Новин поки немає, заходьте пізніше!")
-    else:message.answer(f"запуск розсилки")
-    success_count = 0
+    else:
+        await message.answer(f"запуск розсилки")
+        success_count = 0
 
-for id in list (users_list): 
-    try:
-        await bot.send_message(chat_id=id, text = saved_news_variable)
-        success_count += 1
-    except Exception as e:
-        print(f"Помилка при відправці повідомлення користувачу {id}: {e}") 
-    await message.answer(f"Розсилка завершена! Успішно відправлено {success_count} повідомлень.")
+        for id in list(users_list): 
+            try:
+                await bot.send_message(chat_id=id, text=saved_news_variable)
+                success_count += 1
+            except Exception as e:
+                print(f"Помилка при відправці повідомлення користувачу {id}: {e}") 
+        await message.answer(f"Розсилка завершена! Успішно відправлено {success_count} повідомлень.")
 
 
 
