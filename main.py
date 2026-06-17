@@ -1,23 +1,14 @@
 import asyncio
 import os
+import logging  # Виправлено чистий імпорт для логування
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
 from aiogram.types import CallbackQuery
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from threading import Thread
-from flask import Flask, logging
-
-
-app = Flask('')
-log = logging.getLogger('werkzeug')
-log.setLevel(logging.ERROR)
-
-
+from flask import Flask
 
 app = Flask('')
-logging.getLogger('werkzeug').setLevel(logging.ERROR)
-
-
 
 users_list = set()
 
@@ -34,6 +25,9 @@ def keep_alive():
     t.start()
 
 keep_alive()
+
+# Виправлено налаштування логів (тепер без AttributeError на Render)
+logging.getLogger('werkzeug').setLevel(logging.ERROR)
 
 bot = Bot(token=os.getenv("BOT_TOKEN"))
 dp = Dispatcher()
@@ -112,7 +106,6 @@ async def send_all_news(message: types.Message):
             except Exception as e:
                 print(f"Помилка при відправці повідомлення користувачу {id}: {e}") 
         await message.answer(f"Розсилка завершена! Успішно відправлено {success_count} повідомлень.")
-
 
 
 @dp.callback_query(lambda c: c.data == "show_news")
