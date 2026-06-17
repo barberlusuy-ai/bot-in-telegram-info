@@ -5,7 +5,7 @@ from aiogram.filters import Command
 from aiogram.types import CallbackQuery
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from threading import Thread
-from flask import Flask
+from flask import Flask, logging
 
 app = Flask('')
 
@@ -25,6 +25,12 @@ def keep_alive():
 
 keep_alive()
 
+
+app = Flask('')
+log = logging.getLogger('werkzeug')
+log.setLevel(logging.ERROR)
+
+
 bot = Bot(token=os.getenv("BOT_TOKEN"))
 dp = Dispatcher()
 
@@ -36,10 +42,15 @@ waiting_for_text = False
 async def start_handler(message: types.Message):
     builder = InlineKeyboardBuilder()
     users_list.add(message.from_user.id)
-    web_app = types.WebAppInfo(url="https://untitled-1-tan.vercel.app/")
+    web_app = types.WebAppInfo(url="https://untitled-1222.vercel.app/")
     builder.add(
         types.InlineKeyboardButton(text="🏆 Відкрити додаток", web_app=web_app)
     )
+    
+    user_id = message.from_user.id  
+    if user_id not in users_list:
+        users_list.add(user_id)
+        
 
     builder.add(
         types.InlineKeyboardButton(text="Основний чат", url="https://t.me/+nnmnG7YHRYs5ODY6"),
@@ -76,7 +87,8 @@ async def save_to_variable(message: types.Message):
     global saved_news_variable, waiting_for_text
     saved_news_variable = message.text
     waiting_for_text = False
-    await message.answer(f"Успішно збережено в змінну! Ось твій текст:\n{saved_news_variable}")
+    await message.answer(f"Успішно збережено в змінну! Ось твій текст:\n{saved_news_variable}") and 
+    bot.send_message(chat_id = users_list, text=f":\n{saved_news_variable}")
 
     news_builder = InlineKeyboardBuilder()
     news_builder.add(types.InlineKeyboardButton(text="новости", callback_data="show_news"))
@@ -94,6 +106,11 @@ async def save_to_variable(message: types.Message):
             
     await message.answer("Новину збережено та один раз надіслано всім користувачам.")
 
+@dp.command("sendall")
+async def send_all_news(message: types.Message):
+    await bot.send_message(chat_id = users_list, text=saved_news_variable)
+
+
 @dp.callback_query(lambda c: c.data == "show_news")
 async def process_show_news(callback_query: CallbackQuery):
     global saved_news_variable
@@ -102,6 +119,7 @@ async def process_show_news(callback_query: CallbackQuery):
     else:
         await callback_query.message.answer(f"Останні новини:\n\n{saved_news_variable}")
     await callback_query.answer()
+
 
 async def main():
     print("Бот успішно запущений і готовий до роботи...")
