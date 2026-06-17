@@ -7,7 +7,17 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 from threading import Thread
 from flask import Flask, logging
 
+
 app = Flask('')
+log = logging.getLogger('werkzeug')
+log.setLevel(logging.ERROR)
+
+
+
+app = Flask('')
+logging.getLogger('werkzeug').setLevel(logging.ERROR)
+
+
 
 users_list = set()
 
@@ -24,12 +34,6 @@ def keep_alive():
     t.start()
 
 keep_alive()
-
-
-app = Flask('')
-log = logging.getLogger('werkzeug')
-log.setLevel(logging.ERROR)
-
 
 bot = Bot(token=os.getenv("BOT_TOKEN"))
 dp = Dispatcher()
